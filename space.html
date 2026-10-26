@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Explore space photos, discover facts, and learn about the universe.">
+    <title>Cosmos — Explore the Universe</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #eef2ff;
+        background: #080b18;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        --muted: #a7b0cf;
+        --line: rgba(190, 200, 255, 0.14);
+        --panel: rgba(19, 25, 48, 0.82);
+        --purple: #a78bfa;
+        --cyan: #67e8f9;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        min-width: 320px;
+        line-height: 1.6;
+        background:
+          radial-gradient(ellipse at 82% 5%, rgba(85, 63, 165, 0.25), transparent 28rem),
+          radial-gradient(ellipse at 8% 32%, rgba(28, 104, 153, 0.12), transparent 25rem),
+          #080b18;
+      }
+      a { color: inherit; }
+      button, input { font: inherit; }
+      button, a { -webkit-tap-highlight-color: transparent; }
+      .container { width: min(100% - 2.5rem, 1120px); margin-inline: auto; }
+
+      .site-header {
+        position: sticky;
+        z-index: 5;
+        top: 0;
+        border-bottom: 1px solid var(--line);
+        background: rgba(8, 11, 24, 0.82);
+        backdrop-filter: blur(16px);
+      }
+      .nav-wrap { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+      .brand { display: inline-flex; align-items: center; gap: 0.65rem; text-decoration: none; font-weight: 800; letter-spacing: 0.03em; }
+      .brand-mark { color: var(--cyan); font-size: 1.45rem; }
+      nav ul { display: flex; align-items: center; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+      nav a { color: var(--muted); font-size: 0.92rem; text-decoration: none; transition: color 160ms ease; }
+      nav a:hover, nav a:focus-visible { color: #fff; }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(5rem, 12vw, 9rem) 0 6.5rem;
+        text-align: center;
+      }
+      .hero::before, .hero::after { position: absolute; content: ""; pointer-events: none; }
+      .hero::before {
+        inset: 0;
+        opacity: 0.4;
+        background-image: radial-gradient(#fff 0.7px, transparent 0.7px);
+        background-size: 43px 43px;
+        mask-image: linear-gradient(to bottom, #000, transparent 78%);
+      }
+      .hero::after {
+        top: 2rem;
+        left: 50%;
+        width: min(55rem, 90vw);
+        aspect-ratio: 1;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+        border-radius: 50%;
+        transform: translateX(-50%);
+        box-shadow: 0 0 0 75px rgba(167, 139, 250, 0.025), 0 0 0 150px rgba(103, 232, 249, 0.018);
+      }
+      .hero-content { position: relative; z-index: 1; }
+      .eyebrow { color: var(--cyan); font-size: 0.76rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; }
+      h1 { max-width: 850px; margin: 1rem auto; font-size: clamp(3rem, 9vw, 6.7rem); letter-spacing: -0.075em; line-height: 0.98; }
+      h1 span { color: var(--purple); }
+      .hero p { max-width: 620px; margin: 1.5rem auto 2rem; color: var(--muted); font-size: clamp(1rem, 2vw, 1.18rem); }
+      .hero-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.8rem; }
+      .button {
+        display: inline-flex;
+        min-height: 46px;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1.1rem;
+        border: 1px solid transparent;
+        border-radius: 0.7rem;
+        background: linear-gradient(115deg, #8b5cf6, #6366f1);
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+      }
+      .button:hover { transform: translateY(-2px); }
+      .button.secondary { border-color: var(--line); background: rgba(255,255,255,0.045); }
+      .button:disabled { cursor: wait; opacity: 0.65; transform: none; }
+
+      .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding-bottom: 1rem; }
+      .stat { padding: 1.1rem; border: 1px solid var(--line); border-radius: 0.9rem; background: rgba(19,25,48,0.5); text-align: center; }
+      .stat strong { display: block; color: #fff; font-size: 1.35rem; }
+      .stat span { color: var(--muted); font-size: 0.84rem; }
+
+      .section { padding-block: 5rem; scroll-margin-top: 82px; }
+      .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.6rem; }
+      .section-heading h2 { margin: 0.35rem 0 0; font-size: clamp(1.8rem, 4vw, 2.65rem); letter-spacing: -0.045em; line-height: 1.15; }
+      .section-heading p { max-width: 480px; margin: 0; color: var(--muted); }
+      .section-kicker { color: var(--purple); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
+      .panel { padding: clamp(1rem, 3vw, 1.6rem); border: 1px solid var(--line); border-radius: 1.1rem; background: var(--panel); box-shadow: 0 18px 60px rgba(0,0,0,0.16); }
+      .search-form { display: flex; gap: 0.7rem; }
+      .search-form input, .identify-form input {
+        width: 100%;
+        min-width: 0;
+        min-height: 48px;
+        padding: 0.7rem 0.9rem;
+        border: 1px solid var(--line);
+        border-radius: 0.65rem;
+        outline: none;
+        background: rgba(5, 8, 19, 0.75);
+        color: #fff;
+      }
+      input::placeholder { color: #7883a5; }
+      input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+      .status { min-height: 1.5rem; margin: 0.85rem 0 0; color: var(--muted); font-size: 0.9rem; }
+      .results-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 1.25rem; }
+      .image-card { overflow: hidden; border: 1px solid var(--line); border-radius: 0.9rem; background: #10162a; }
+      .image-card img { display: block; width: 100%; height: 210px; object-fit: cover; background: #151b32; }
+      .image-card-body { padding: 1rem; }
+      .image-card h3 { margin: 0 0 0.45rem; font-size: 1rem; line-height: 1.35; }
+      .image-card p { margin: 0 0 0.8rem; color: var(--muted); font-size: 0.83rem; }
+      .text-link { color: var(--cyan); font-size: 0.86rem; text-decoration: none; }
+      .text-link:hover { text-decoration: underline; }
+
+      .facts-layout { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 1.2rem; }
+      .fact-highlight { min-height: 100%; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(145deg, rgba(87,66,155,0.38), rgba(19,25,48,0.9) 70%); }
+      .fact-highlight .big-number { margin: 1.4rem 0 0.35rem; color: var(--cyan); font-size: clamp(2.5rem, 7vw, 4rem); font-weight: 800; letter-spacing: -0.07em; line-height: 1; }
+      .fact-highlight p { margin: 0; color: var(--muted); }
+      .fact-list { display: grid; gap: 0.8rem; margin-top: 1.1rem; }
+      .fact-result { padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 0.8rem; background: rgba(5,8,19,0.42); }
+      .fact-result h3 { margin: 0 0 0.35rem; font-size: 1.02rem; }
+      .fact-result p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+      .fact-result a { display: inline-block; margin-top: 0.55rem; }
+      .search-hint { margin: 0.8rem 0 0; color: var(--muted); font-size: 0.82rem; }
+      .random-facts-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+      .random-fact { display: flex; align-items: flex-start; gap: 0.9rem; }
+      .random-fact-number { flex: 0 0 auto; color: var(--cyan); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; }
+      .random-fact p { margin: 0; color: var(--muted); }
+
+      .upload-layout { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 1.2rem; align-items: start; }
+      .drop-area {
+        display: flex;
+        min-height: 270px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        border: 1px dashed rgba(167,139,250,0.58);
+        border-radius: 0.9rem;
+        background: rgba(9,12,27,0.54);
+        text-align: center;
+        cursor: pointer;
+      }
+      .drop-area:hover, .drop-area.drag-over { border-color: var(--cyan); background: rgba(103,232,249,0.06); }
+      .upload-icon { color: var(--purple); font-size: 2.5rem; }
+      .drop-area strong { margin-top: 0.45rem; }
+      .drop-area span { margin-top: 0.3rem; color: var(--muted); font-size: 0.87rem; }
+      .drop-area input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+      .upload-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: 0.8rem; }
+      .upload-actions .button { flex: 1; }
+      .upload-actions input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+      .preview-wrap { display: none; margin-top: 1rem; }
+      .preview-wrap.visible { display: block; }
+      .preview-wrap img { display: block; width: 100%; max-height: 360px; border-radius: 0.8rem; object-fit: contain; background: #050813; }
+      .preview-name { margin: 0.6rem 0 0; color: var(--muted); font-size: 0.85rem; overflow-wrap: anywhere; }
+      .identify-panel h3 { margin: 0 0 0.45rem; }
+      .identify-panel > p { margin: 0 0 1rem; color: var(--muted); font-size: 0.91rem; }
+      .identify-button { width: 100%; }
+      .privacy-note { margin-top: 1rem !important; padding: 0.75rem; border-radius: 0.65rem; background: rgba(103,232,249,0.07); color: #b8c5e9 !important; font-size: 0.83rem !important; }
+      .identify-result { margin-top: 1rem; }
+      .identify-result:empty { display: none; }
+      .match-list { display: grid; gap: 0.65rem; margin-top: 0.75rem; }
+      .match-item { padding: 0.8rem 1rem; border: 1px solid var(--line); border-radius: 0.7rem; background: rgba(5,8,19,0.42); text-transform: capitalize; }
+      .primary-match { margin-bottom: 0.85rem; padding: 0.9rem 1rem; border: 1px solid rgba(103,232,249,0.35); border-radius: 0.75rem; background: rgba(103,232,249,0.07); }
+      .primary-match h4 { margin: 0 0 0.3rem; color: var(--cyan); font-size: 0.78rem; letter-spacing: 0.09em; text-transform: uppercase; }
+      .primary-match p { margin: 0; font-weight: 700; text-transform: capitalize; }
+      .caption-card { padding: 1rem; border: 1px solid var(--line); border-radius: 0.8rem; background: rgba(5,8,19,0.42); }
+      .caption-card h4 { margin: 0 0 0.4rem; color: var(--cyan); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; }
+      .caption-card p { margin: 0; }
+      .match-heading { margin: 1rem 0 0; font-size: 0.9rem; }
+      .more-images { margin-top: 1rem; }
+      .more-image-status { margin: 0.7rem 0 0; color: var(--muted); font-size: 0.88rem; }
+
+      .site-footer { padding: 1.8rem 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.86rem; }
+      .footer-content { display: flex; justify-content: space-between; gap: 1rem; }
+      .site-footer p { margin: 0; }
+
+      @media (max-width: 760px) {
+        .section-heading { align-items: flex-start; flex-direction: column; }
+        .facts-layout, .upload-layout { grid-template-columns: 1fr; }
+        .random-facts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .results-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 540px) {
+        .container { width: min(100% - 1.5rem, 1120px); }
+        .nav-wrap { min-height: 64px; flex-wrap: wrap; padding-block: 0.7rem; }
+        nav ul { gap: 0.8rem; }
+        nav a { font-size: 0.8rem; }
+        .brand { font-size: 0.94rem; }
+        .hero { padding-block: 4.7rem 4rem; }
+        .stats { grid-template-columns: 1fr; gap: 0.65rem; }
+        .stat { display: flex; align-items: baseline; justify-content: space-between; text-align: left; }
+        .random-facts-grid { grid-template-columns: 1fr; }
+        .results-grid { grid-template-columns: 1fr; }
+        .search-form { flex-direction: column; }
+        .search-form .button { width: 100%; }
+        .section { padding-block: 3.5rem; }
+        .footer-content { flex-direction: column; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a class="brand" href="#home" aria-label="Cosmos home"><span class="brand-mark" aria-hidden="true">✦</span> COSMOS EXPLORER</a>
+        <nav aria-label="Main navigation">
+          <ul>
+            <li><a href="#images">Image search</a></li>
+            <li><a href="#facts">Space facts</a></li>
+            <li><a href="#random-facts">Random facts</a></li>
+            <li><a href="#identify">Identify a photo</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="container hero-content">
+          <div class="eyebrow">Your window to the universe</div>
+          <h1>Wonder is just <span>one orbit</span> away.</h1>
+          <p>Search real space imagery, explore fascinating facts, and take a closer look at your own cosmic photos.</p>
+          <div class="hero-links">
+            <a class="button" href="#images">Explore images <span aria-hidden="true">→</span></a>
+            <a class="button secondary" href="#facts">Discover space facts</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="container stats" aria-label="A few facts about space">
+        <div class="stat"><strong>~150 million km</strong><span>Earth to Sun, on average</span></div>
+        <div class="stat"><strong>8 planets</strong><span>Orbit our Sun</span></div>
+        <div class="stat"><strong>13.8 billion years</strong><span>Approximate age of the universe</span></div>
+      </div>
+
+      <section class="section container" id="images" aria-labelledby="images-title">
+        <div class="section-heading">
+          <div><div class="section-kicker">The cosmos, captured</div><h2 id="images-title">Explore space images</h2></div>
+          <p>Search NASA’s public image and video library for planets, galaxies, missions, and more.</p>
+        </div>
+        <div class="panel">
+          <form class="search-form" id="image-search-form">
+            <label class="sr-only" for="image-query">Search NASA images</label>
+            <input id="image-query" name="query" type="search" placeholder="Try “Saturn”, “nebula”, or “Apollo 11”" required>
+            <button class="button" type="submit">Search images</button>
+          </form>
+          <p class="status" id="image-status" role="status" aria-live="polite">Search the NASA image library to get started.</p>
+          <div class="results-grid" id="image-results"></div>
+        </div>
+      </section>
+
+      <section class="section container" id="facts" aria-labelledby="facts-title">
+        <div class="section-heading">
+          <div><div class="section-kicker">Curiosity, answered</div><h2 id="facts-title">Space facts &amp; data</h2></div>
+          <p>Look up a space topic and browse encyclopedia summaries with links to their sources.</p>
+        </div>
+        <div class="facts-layout">
+          <article class="panel fact-highlight">
+            <div><div class="section-kicker">A little perspective</div><div class="big-number">299,792</div><p>kilometers per second — the speed of light in a vacuum.</p></div>
+            <p class="search-hint">Light from the Sun takes about 8 minutes and 20 seconds to reach Earth.</p>
+          </article>
+          <div class="panel">
+            <form class="search-form" id="fact-search-form">
+              <label class="sr-only" for="fact-query">Search space facts</label>
+              <input id="fact-query" name="query" type="search" placeholder="Search “black holes”, “Mars”, “comets”" required>
+              <button class="button" type="submit">Search facts</button>
+            </form>
+            <p class="status" id="fact-status" role="status" aria-live="polite">Search a topic to find related space articles.</p>
+            <div class="fact-list" id="fact-results"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section container" id="random-facts" aria-labelledby="random-facts-title">
+        <div class="section-heading">
+          <div><div class="section-kicker">Fun facts from across the universe</div><h2 id="random-facts-title">Random space facts</h2></div>
+          <p>A little collection of surprising facts about the planets, stars, and worlds around us.</p>
+        </div>
+        <div class="random-facts-grid">
+          <article class="panel random-fact">
+            <span class="random-fact-number" aria-hidden="true">01</span>
+            <p>A day on Venus lasts about 243 Earth days—longer than its year, which is about 225 Earth days.</p>
+          </article>
+          <article class="panel random-fact">
+            <span class="random-fact-number" aria-hidden="true">02</span>
+            <p>The Moon is slowly moving away from Earth at about 3.8 centimeters per year.</p>
+          </article>
+          <article class="panel random-fact">
+            <span class="random-fact-number" aria-hidden="true">03</span>
+            <p>Jupiter’s Great Red Spot is a giant storm that has been observed for centuries.</p>
+          </article>
+          <article class="panel random-fact">
+            <span class="random-fact-number" aria-hidden="true">04</span>
+            <p>Sunlight takes about 8 minutes and 20 seconds to travel the 150 million kilometers to Earth.</p>
+          </article>
+          <article class="panel random-fact">
+            <span class="random-fact-number" aria-hidden="true">05</span>
+            <p>Saturn’s average density is lower than water’s, though there is no ocean large enough to float it in.</p>
+          </article>
+          <article class="panel random-fact">
+            <span class="random-fact-number" aria-hidden="true">06</span>
+            <p>Mars is home to Olympus Mons, a shield volcano about 22 kilometers high.</p>
+          </article>
+          <article class="panel random-fact">
+            <span class="random-fact-number" aria-hidden="true">07</span>
+            <p>Neptune’s winds can reach speeds of more than 2,000 kilometers per hour.</p>
+          </article>
+          <article class="panel random-fact">
+            <span class="random-fact-number" aria-hidden="true">08</span>
+            <p>The Sun contains more than 99% of the total mass of our solar system.</p>
+          </article>
+          <article class="panel random-fact">
+            <span class="random-fact-number" aria-hidden="true">09</span>
+            <p>A teaspoon of neutron-star material would have an enormous mass—roughly a billion tons on Earth.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section container" id="identify" aria-labelledby="identify-title">
+        <div class="section-heading">
+          <div><div class="section-kicker">Your own view of space</div><h2 id="identify-title">Explore your space photo</h2></div>
+          <p>Take a photo or choose one from your device. The page will analyze the image and suggest what it might show.</p>
+        </div>
+        <div class="upload-layout">
+          <div class="panel">
+            <label class="drop-area" id="drop-area" for="photo-file">
+              <span class="upload-icon" aria-hidden="true">⇧</span>
+              <strong>Choose or drop a space photo</strong>
+              <span>JPG, PNG, GIF, or WebP · up to 15 MB</span>
+              <input id="photo-file" type="file" accept="image/jpeg,image/png,image/gif,image/webp">
+            </label>
+            <div class="upload-actions">
+              <label class="button secondary" for="camera-file">Take a photo</label>
+              <input id="camera-file" type="file" accept="image/*" capture="environment">
+            </div>
+            <p class="status" id="photo-status" role="status" aria-live="polite">Your photo preview stays on this device.</p>
+            <div class="preview-wrap" id="preview-wrap">
+              <img id="photo-preview" alt="Preview of your selected space photo">
+              <p class="preview-name" id="preview-name"></p>
+            </div>
+          </div>
+          <div class="panel identify-panel">
+            <h3>What’s in your photo?</h3>
+            <p>Run an image model in your browser to get its best guesses from common space objects and scenes.</p>
+            <button class="button identify-button" id="identify-button" type="button" disabled>Identify this photo</button>
+            <p class="privacy-note">Your photo is analyzed on this device and is not uploaded. AI-generated descriptions can make mistakes. The recognition models download the first time you use this feature.</p>
+            <div class="identify-result" id="identify-result" role="status" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <p>Made for curious minds, looking up. ✦</p>
+        <p>Images: NASA Image and Video Library · Facts: Wikipedia · Photo analysis runs in your browser</p>
+      </div>
+    </footer>
+
+    <script>
+      const NASA_SEARCH_URL = "https://images-api.nasa.gov/search";
+      const WIKIPEDIA_API_URL = "https://en.wikipedia.org/w/api.php";
+      const MAX_FILE_SIZE = 15 * 1024 * 1024;
+      const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/gif", "image/webp"]);
+      const SPACE_LABELS = [
+        "a detailed photograph of Earth's Moon",
+        "a detailed photograph of the planet Mars",
+        "a detailed photograph of the planet Jupiter",
+        "a detailed photograph of Saturn and its rings",
+        "a detailed photograph of the planet Venus",
+        "a detailed photograph of the planet Mercury",
+        "a detailed photograph of the planet Uranus",
+        "a detailed photograph of the planet Neptune",
+        "a detailed photograph of Earth from orbit",
+        "a detailed photograph of the Sun's surface",
+        "a close-up photograph of a solar flare or solar prominence",
+        "a photograph of a sunspot on the Sun",
+        "a photograph of stars and the Milky Way",
+        "a photograph of a star cluster",
+        "a photograph of a colorful emission nebula",
+        "a photograph of a planetary nebula",
+        "a photograph of a supernova remnant",
+        "a photograph of a spiral galaxy",
+        "a photograph of an elliptical galaxy",
+        "a photograph of a galaxy collision",
+        "a deep field photograph of distant galaxies",
+        "an artistic illustration of a black hole",
+        "a photograph of a comet in space",
+        "a photograph of an asteroid",
+        "a photograph of a meteor or meteor shower",
+        "a photograph of an aurora in Earth's atmosphere",
+        "a photograph of a total solar eclipse",
+        "a photograph of a lunar eclipse",
+        "a photograph of a rocket launching",
+        "a photograph of a rocket on a launch pad",
+        "a photograph of an astronaut on a spacewalk",
+        "a photograph of astronauts on the Moon",
+        "a photograph of the International Space Station",
+        "a photograph of a space telescope",
+        "a photograph of a satellite orbiting Earth",
+        "a photograph of a Mars rover on the Martian surface",
+        "a photograph of a lunar lander on the Moon",
+        "an artist's illustration of a planet in space",
+        "an artist's illustration of a spacecraft",
+        "a computer-generated space scene",
+        "a photograph of clouds in Earth's sky",
+        "a photograph of a mountain landscape on Earth",
+        "a photograph of an ocean or coastline on Earth",
+        "a photograph of a city at night on Earth",
+        "a photograph of an animal",
+        "a photograph of a person indoors",
+        "a photograph of a building",
+        "a photograph of an object on a table"
+      ];
+      const identifyButton = document.getElementById("identify-button");
+      const identifyResult = document.getElementById("identify-result");
+      let imageClassifierPromise;
+      let imageCaptionerPromise;
+      let analysisRequest = 0;
+
+      function safeText(value, fallback) {
+        return typeof value === "string" && value.trim() ? value.trim() : fallback;
+      }
+
+      function setStatus(element, message) {
+        element.textContent = message;
+      }
+
+      function truncate(value, length) {
+        const text = safeText(value, "");
+        return text.length > length ? `${text.slice(0, length).trimEnd()}…` : text;
+      }
+
+      async function searchNasaImages(query, resultsElement, statusElement) {
+        const searchUrl = new URL(NASA_SEARCH_URL);
+        searchUrl.search = new URLSearchParams({ q: query, media_type: "image", page_size: "9" });
+        setStatus(statusElement, "Searching NASA’s collection…");
+        resultsElement.replaceChildren();
+
+        try {
+          const response = await fetch(searchUrl);
+          if (!response.ok) throw new Error(`NASA image search returned ${response.status}.`);
+          const data = await response.json();
+          const items = data.collection && Array.isArray(data.collection.items) ? data.collection.items : [];
+          const cards = items.map((item) => {
+            const image = Array.isArray(item.links) && item.links.find((link) => link.rel === "preview" && link.href);
+            const metadata = Array.isArray(item.data) ? item.data[0] : null;
+            if (!image || !metadata) return null;
+
+            const card = document.createElement("article");
+            card.className = "image-card";
+            const img = document.createElement("img");
+            img.src = image.href;
+            img.alt = safeText(metadata.title, "NASA space image");
+            img.loading = "lazy";
+            img.referrerPolicy = "no-referrer";
+            const body = document.createElement("div");
+            body.className = "image-card-body";
+            const title = document.createElement("h3");
+            title.textContent = safeText(metadata.title, "Untitled image");
+            const description = document.createElement("p");
+            description.textContent = truncate(metadata.description, 140) || "Explore this image from NASA’s collection.";
+            const source = document.createElement("a");
+            source.className = "text-link";
+            source.href = safeText(metadata.nasa_id, "").length
+              ? `https://images.nasa.gov/details/${encodeURIComponent(metadata.nasa_id)}`
+              : "https://images.nasa.gov/";
+            source.target = "_blank";
+            source.rel = "noopener noreferrer";
+            source.textContent = "View in NASA library ↗";
+            body.append(title, description, source);
+            card.append(img, body);
+            return card;
+          }).filter(Boolean);
+
+          if (!cards.length) {
+            setStatus(statusElement, `No NASA images found for “${query}”. Try a broader search term.`);
+            return;
+          }
+          resultsElement.append(...cards);
+          setStatus(statusElement, `Showing ${cards.length} NASA image${cards.length === 1 ? "" : "s"} for “${query}”.`);
+        } catch (error) {
+          console.error("NASA image search failed:", error);
+          setStatus(statusElement, "NASA image search is unavailable right now. Check your connection and try again.");
+        }
+      }
+
+      document.getElementById("image-search-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const query = document.getElementById("image-query").value.trim();
+        if (query) searchNasaImages(query, document.getElementById("image-results"), document.getElementById("image-status"));
+      });
+
+      async function searchFacts(query) {
+        const searchUrl = new URL(WIKIPEDIA_API_URL);
+        searchUrl.search = new URLSearchParams({
+          action: "query",
+          list: "search",
+          srsearch: query,
+          srlimit: "5",
+          format: "json",
+          origin: "*"
+        });
+        const resultsElement = document.getElementById("fact-results");
+        const statusElement = document.getElementById("fact-status");
+        setStatus(statusElement, "Searching space articles…");
+        resultsElement.replaceChildren();
+
+        try {
+          const response = await fetch(searchUrl);
+          if (!response.ok) throw new Error(`Wikipedia search returned ${response.status}.`);
+          const data = await response.json();
+          const results = data.query && Array.isArray(data.query.search) ? data.query.search : [];
+          if (!results.length) {
+            setStatus(statusElement, `No articles found for “${query}”. Try another topic.`);
+            return;
+          }
+
+          for (const result of results) {
+            const article = document.createElement("article");
+            article.className = "fact-result";
+            const title = document.createElement("h3");
+            title.textContent = result.title;
+            const summary = document.createElement("p");
+            summary.textContent = result.snippet
+              ? result.snippet.replace(/<[^>]*>/g, "").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&#039;/g, "'")
+              : "Open this article to explore the topic.";
+            const link = document.createElement("a");
+            link.className = "text-link";
+            link.href = `https://en.wikipedia.org/wiki/${encodeURIComponent(result.title.replace(/ /g, "_"))}`;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.textContent = "Read article ↗";
+            article.append(title, summary, link);
+            resultsElement.append(article);
+          }
+          setStatus(statusElement, `Found ${results.length} article${results.length === 1 ? "" : "s"} for “${query}”.`);
+        } catch (error) {
+          console.error("Space fact search failed:", error);
+          setStatus(statusElement, "Fact search is unavailable right now. Check your connection and try again.");
+        }
+      }
+
+      document.getElementById("fact-search-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const query = document.getElementById("fact-query").value.trim();
+        if (query) searchFacts(query);
+      });
+
+      const fileInput = document.getElementById("photo-file");
+      const cameraInput = document.getElementById("camera-file");
+      const dropArea = document.getElementById("drop-area");
+      const preview = document.getElementById("photo-preview");
+      let previewUrl = "";
+
+      function showPhoto(file) {
+        const previewWrap = document.getElementById("preview-wrap");
+        const name = document.getElementById("preview-name");
+        const status = document.getElementById("photo-status");
+        if (!file) return;
+        if (!allowedImageTypes.has(file.type)) {
+          setStatus(status, "This image format is not supported. Please choose a JPG, PNG, GIF, or WebP photo.");
+          return;
+        }
+        if (file.size > MAX_FILE_SIZE) {
+          setStatus(status, "That image is larger than 15 MB. Choose a smaller photo.");
+          return;
+        }
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = URL.createObjectURL(file);
+        preview.src = previewUrl;
+        name.textContent = `${file.name} · ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+        previewWrap.classList.add("visible");
+        identifyButton.disabled = false;
+        analysisRequest += 1;
+        identifyResult.replaceChildren();
+        setStatus(status, "Photo ready. Select “Identify this photo” to analyze it.");
+      }
+
+      fileInput.addEventListener("change", () => showPhoto(fileInput.files[0]));
+      cameraInput.addEventListener("change", () => showPhoto(cameraInput.files[0]));
+      for (const eventName of ["dragenter", "dragover"]) {
+        dropArea.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          dropArea.classList.add("drag-over");
+        });
+      }
+      for (const eventName of ["dragleave", "drop"]) {
+        dropArea.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          dropArea.classList.remove("drag-over");
+        });
+      }
+      dropArea.addEventListener("drop", (event) => {
+        const file = event.dataTransfer.files[0];
+        showPhoto(file);
+      });
+
+      async function getImageClassifier() {
+        if (!imageClassifierPromise) {
+          imageClassifierPromise = import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2")
+            .then(({ pipeline }) => pipeline("zero-shot-image-classification", "Xenova/clip-vit-base-patch16"))
+            .catch((error) => {
+              imageClassifierPromise = undefined;
+              throw error;
+            });
+        }
+        return imageClassifierPromise;
+      }
+
+      async function getImageCaptioner() {
+        if (!imageCaptionerPromise) {
+          imageCaptionerPromise = import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2")
+            .then(async ({ AutoProcessor, Florence2ForConditionalGeneration, load_image }) => {
+              const modelId = "onnx-community/Florence-2-base-ft";
+              const [model, processor] = await Promise.all([
+                Florence2ForConditionalGeneration.from_pretrained(modelId, { dtype: "q8" }),
+                AutoProcessor.from_pretrained(modelId)
+              ]);
+              return { model, processor, load_image };
+            })
+            .catch((error) => {
+              imageCaptionerPromise = undefined;
+              throw error;
+            });
+        }
+        return imageCaptionerPromise;
+      }
+
+      identifyButton.addEventListener("click", async () => {
+        if (!previewUrl || identifyButton.disabled) return;
+        const currentRequest = ++analysisRequest;
+        identifyButton.disabled = true;
+        identifyResult.replaceChildren();
+        setStatus(identifyResult, "Loading the image classifier. The first download can take a little while…");
+
+        try {
+          const classifier = await getImageClassifier();
+          if (currentRequest !== analysisRequest) return;
+          setStatus(identifyResult, "Comparing your photo with space objects and other common scenes…");
+          const predictions = await classifier(previewUrl, SPACE_LABELS, { top_k: 4 });
+          if (currentRequest !== analysisRequest) return;
+          if (!Array.isArray(predictions) || !predictions.length) {
+            setStatus(identifyResult, "The model did not return a match. Try another clear space photo.");
+            return;
+          }
+
+          const captionCard = document.createElement("div");
+          captionCard.className = "caption-card";
+          const captionTitle = document.createElement("h4");
+          captionTitle.textContent = "Detailed image description";
+          const captionText = document.createElement("p");
+          captionText.textContent = "Loading the detailed image description…";
+          captionCard.append(captionTitle, captionText);
+
+          const primaryMatch = document.createElement("div");
+          primaryMatch.className = "primary-match";
+          const primaryTitle = document.createElement("h4");
+          primaryTitle.textContent = "Closest visual match";
+          const primaryLabel = document.createElement("p");
+          const bestLabel = safeText(predictions[0].label, "Unknown match")
+            .replace(/^(a detailed photograph of |a close-up photograph of |a close-up image of |a photograph of |an artistic illustration of |an artist's illustration of )/i, "");
+          primaryLabel.textContent = `This image may show ${bestLabel}.`;
+          primaryMatch.append(primaryTitle, primaryLabel);
+
+          const heading = document.createElement("h4");
+          heading.className = "match-heading";
+          heading.textContent = "Other possibilities";
+          const list = document.createElement("div");
+          list.className = "match-list";
+          for (const prediction of predictions.slice(1, 3)) {
+            const item = document.createElement("div");
+            item.className = "match-item";
+            const label = document.createElement("strong");
+            label.textContent = safeText(prediction.label, "Unknown match")
+              .replace(/^(a detailed photograph of |a photograph of |an artistic illustration of |an artist's illustration of )/i, "");
+            item.append(label);
+            list.append(item);
+          }
+
+          const moreImagesButton = document.createElement("button");
+          moreImagesButton.className = "button secondary more-images";
+          moreImagesButton.type = "button";
+          moreImagesButton.textContent = "Show more such images";
+          const imageStatus = document.createElement("p");
+          imageStatus.className = "more-image-status";
+          imageStatus.setAttribute("role", "status");
+          const imageResults = document.createElement("div");
+          imageResults.className = "results-grid";
+          moreImagesButton.addEventListener("click", () => {
+            const query = bestLabel;
+            searchNasaImages(query, imageResults, imageStatus);
+          });
+          identifyResult.replaceChildren(primaryMatch, captionCard, heading, list, moreImagesButton, imageStatus, imageResults);
+
+          try {
+            captionText.textContent = "Loading the detailed image-description model. Its first download can take a little while…";
+            const { model, processor, load_image } = await getImageCaptioner();
+            if (currentRequest !== analysisRequest) return;
+            captionText.textContent = "Writing a detailed description of your photo…";
+            const task = "<MORE_DETAILED_CAPTION>";
+            const image = await load_image(previewUrl);
+            if (currentRequest !== analysisRequest) return;
+            const prompts = processor.construct_prompts(task);
+            const inputs = await processor(image, prompts);
+            const generatedIds = await model.generate({ ...inputs, max_new_tokens: 100 });
+            const generatedText = processor.batch_decode(generatedIds, { skip_special_tokens: false })[0];
+            const description = processor.post_process_generation(generatedText, task, image.size)[task];
+            if (currentRequest !== analysisRequest) return;
+            captionText.textContent = safeText(description, "The model could not describe this image.");
+          } catch (error) {
+            console.error("Detailed photo description failed:", error);
+            if (currentRequest === analysisRequest) {
+              captionText.textContent = "The detailed description model could not load. The closest visual match is an AI guess, not a confirmed identification.";
+            }
+          }
+        } catch (error) {
+          console.error("Photo identification failed:", error);
+          setStatus(identifyResult, "Could not load or run the image classifier. Check your internet connection, then select Identify this photo to retry.");
+        } finally {
+          if (currentRequest === analysisRequest) identifyButton.disabled = false;
+        }
+      });
+    </script>
+    <style>
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        clip-path: inset(50%);
+      }
+    </style>
+  </body>
+</html>
